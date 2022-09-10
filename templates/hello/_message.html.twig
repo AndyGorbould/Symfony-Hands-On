@@ -1,0 +1,12 @@
+<div style='color: grey;'>
+{% if date(message.created) < date('-1year') %}
+    Older than 1 year
+{% else %}
+    {{ message.created|date('d/m/Y') }}
+{% endif %}
+</div>
+
+
+{# This is a 'partial' which starts with an underscore #}
+{# Partials inherits data from parents (index, show_one etc) so the message.created var is within scope #}
+{# They can also have data passed TO it from the 'include' statement (similar to React props) #}

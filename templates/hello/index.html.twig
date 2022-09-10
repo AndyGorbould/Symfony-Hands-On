@@ -5,8 +5,10 @@
 <div>
     {# How data is conditionally rendered should be done inside the template #}
     {% if messages|length > 0 %}
-        {% for message in messages %}
-            <div>{{ message }}</div>
+        {% for message in messages|slice(0, limit) %}
+            <div>{{ message.message }}</div>
+            {{ include('hello/_message.html.twig', {message: message}) }}
+            {# 👆 the partial to include needs to be declared, the data being sent to the partial can also be declared here. Data is inherited by partials from parents but declaring it can change the names if necessary #}
         {% endfor %}
     {% else %}
         No messages...

@@ -9,7 +9,9 @@ use Symfony\Component\HttpFoundation\Response; # Right-click on class name, Impo
 class HelloController extends AbstractController # One class per file
 {
     private array $messages = [
-        'abc', 'def', 'ghi'
+        ['message' => 'abc', 'created' => '2022/09/10'],
+        ['message' => 'def', 'created' => '2022/09/09'],
+        ['message' => 'ghi', 'created' => '2019/08/08']
     ];
 
     #[Route('/{limit<\d+>?3}', name: 'app_index')] # limit then <\d+> for int, then ? for optional, then 3 for default limit amount. http://127.0.0.1:8000/2 would return 2 values etc.
@@ -21,7 +23,9 @@ class HelloController extends AbstractController # One class per file
         return $this->render(
             'hello/index.html.twig',
             [
-                'messages' => array_slice($this->messages, 0, $limit) # renamed to 'messages' (plural) & removed implode, so this fits better to the MVC pattern
+                // 'messages' => array_slice($this->messages, 0, $limit) # renamed to 'messages' (plural) & removed implode, so this fits better to the MVC pattern
+                'messages' => $this->messages,
+                'limit' => $limit
             ]
         );
     }
