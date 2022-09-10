@@ -1,3 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+{# 👆 this now only renders inside of the body, everything else is extended from the base #}
 <div>
-{{ message }}
+    {# How data is conditionally rendered should be done inside the template #}
+    {% if messages|length > 0 %}
+        {% for message in messages %}
+            <div>{{ message }}</div>
+        {% endfor %}
+    {% else %}
+        No messages...
+    {% endif %}
 </div>
+{% endblock %}

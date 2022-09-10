@@ -20,7 +20,9 @@ class HelloController extends AbstractController # One class per file
         // );
         return $this->render(
             'hello/index.html.twig',
-            ['message' => implode(',', array_slice($this->messages, 0, $limit))]
+            [
+                'messages' => array_slice($this->messages, 0, $limit) # renamed to 'messages' (plural) & removed implode, so this fits better to the MVC pattern
+            ]
         );
     }
 
