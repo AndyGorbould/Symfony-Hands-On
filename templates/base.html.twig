@@ -15,7 +15,12 @@
     </head>
     <body>
         <h1>Welcome to Symfony 😎</h1>
-        {# 👆 this will show in all twigs that extend from base, because template inheritance! #}
+        {% for message in app.flashes('success') %}
+            <div style='color: green'>
+                {{ message }}
+            </div>
+
+        {% endfor %}
         {% block body %}{% endblock %}
     </body>
 </html>

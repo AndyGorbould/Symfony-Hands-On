@@ -68,6 +68,10 @@ class MicroPostController extends AbstractController
             // dd($post);
             $post->setCreated(new DateTime());
             $posts->add($post, true);           // 📌 remember 'true' for flush on entity manager (repository)
+        
+            $this->addFlash('success', 'Your post has been added'); // flash message after submit
+
+            return $this->redirectToRoute('app_micro_post'); // redirect after submit
         }
 
         return $this->renderForm(
