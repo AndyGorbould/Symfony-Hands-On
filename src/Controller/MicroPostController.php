@@ -58,7 +58,8 @@ class MicroPostController extends AbstractController
         $form = $this->createFormBuilder($microPost)
             ->add('title')
             ->add('text')
-            ->add('submit', SubmitType::class, ['label' => 'Save'])
+            // ->add('submit', SubmitType::class, ['label' => 'Save'])
+            // 👆 button in bulder not needed as the form is now customized
             ->getForm();
 
         $form->handleRequest($request);
@@ -68,8 +69,36 @@ class MicroPostController extends AbstractController
             // dd($post);
             $post->setCreated(new DateTime());
             $posts->add($post, true);           // 📌 remember 'true' for flush on entity manager (repository)
-        
+
             $this->addFlash('success', 'Your post has been added'); // flash message after submit
+
+            return $this->redirectToRoute('app_micro_post'); // redirect after submit
+        }
+
+        return $this->renderForm(
+            'micro_post/add.html.twig',
+            [
+                'form' => $form
+            ]
+        );
+    }
+
+    #[Route('/micro-post/{post}/edit', name: 'app_micro_post_edit')]
+    public function edit(MicroPost $post, Request $request, MicroPostRepository $posts): Response
+    {
+        /** @var $form Symfony\Component\Form\ClickableInterface */
+        $form = $this->createFormBuilder($post)
+            ->add('title')
+            ->add('text')
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $post = $form->getData();
+            $posts->add($post, true);           // 📌 'add' works for add & edit
+
+            $this->addFlash('success', 'Your post has been edited'); // flash message after submit
 
             return $this->redirectToRoute('app_micro_post'); // redirect after submit
         }
