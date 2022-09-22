@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController; # this is needed to use 'render' to twig method & other 'helpers' https://symfony.com/doc/current/controller.html
+use App\Entity\User;
+use App\Entity\UserProfile;
+use App\Repository\UserProfileRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response; # Right-click on class name, Import Class
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController; # this is needed to use 'render' to twig method & other 'helpers' https://symfony.com/doc/current/controller.html
 
 class HelloController extends AbstractController # One class per file
 {
@@ -14,9 +17,21 @@ class HelloController extends AbstractController # One class per file
         ['message' => 'ghi', 'created' => '2019/08/08']
     ];
 
-    #[Route('/{limit<\d+>?3}', name: 'app_index')] # limit then <\d+> for int, then ? for optional, then 3 for default limit amount. http://127.0.0.1:8000/2 would return 2 values etc.
-    public function index(int $limit): Response
+    #[Route('/', name: 'app_index')] # limit then <\d+> for int, then ? for optional, then 3 for default limit amount. http://127.0.0.1:8000/2 would return 2 values etc.
+    public function index(UserProfileRepository $profiles): Response
     {
+        // $user = new User();
+        // $user->setEmail('root@root.com');
+        // $user->setPassword('root');
+
+        // $profile = new UserProfile();
+        // $profile->setUser($user);
+        // $profiles->add($profile, true);
+
+
+        // $profile = $profiles->find(1);
+        // $profiles->remove($profile, true);
+
         // return new Response(
         //     implode(',', array_slice($this->messages, 0, $limit)) # array_slice = array, offset, length https://www.php.net/manual/en/function.array-slice.php
         // );
@@ -25,7 +40,7 @@ class HelloController extends AbstractController # One class per file
             [
                 // 'messages' => array_slice($this->messages, 0, $limit) # renamed to 'messages' (plural) & removed implode, so this fits better to the MVC pattern
                 'messages' => $this->messages,
-                'limit' => $limit
+                'limit' => 3
             ]
         );
     }
