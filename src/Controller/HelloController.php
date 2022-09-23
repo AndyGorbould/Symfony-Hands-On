@@ -2,8 +2,13 @@
 
 namespace App\Controller;
 
+use DateTime;
 use App\Entity\User;
+use App\Entity\Comment;
+use App\Entity\MicroPost;
 use App\Entity\UserProfile;
+use App\Repository\CommentRepository;
+use App\Repository\MicroPostRepository;
 use App\Repository\UserProfileRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Response; # Right-click on class name, Import Class
@@ -18,8 +23,22 @@ class HelloController extends AbstractController # One class per file
     ];
 
     #[Route('/', name: 'app_index')] # limit then <\d+> for int, then ? for optional, then 3 for default limit amount. http://127.0.0.1:8000/2 would return 2 values etc.
-    public function index(UserProfileRepository $profiles): Response
+    public function index(MicroPostRepository $posts, CommentRepository $comments): Response
     {
+        // $post = new MicroPost();
+        // $post->setTitle('hiya!');
+        // $post->setText('hiya!');
+        // $post->setCreated(new DateTime());
+
+        $post = $posts->find(9);
+
+        $comment = new Comment();
+        $comment->setText('hiya!');
+        $comment->setPost($post);
+        // $post->addComment($comment);
+        // $posts->add($post, true);
+        $comments->add($comment, true);
+
         // $user = new User();
         // $user->setEmail('root@root.com');
         // $user->setPassword('root');
