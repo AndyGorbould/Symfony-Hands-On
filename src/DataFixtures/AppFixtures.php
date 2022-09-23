@@ -47,18 +47,21 @@ class AppFixtures extends Fixture
         $microPost1->setTitle('Welcome to my Symfony App!');
         $microPost1->setText('Welcome to my Symfony App!');
         $microPost1->setCreated(new DateTime()); // import this too!
+        $microPost1->setAuthor($user1);
         $manager->persist($microPost1);
 
         $microPost2 = new MicroPost(); // R-click to import class
         $microPost2->setTitle('Hello again user!');
         $microPost2->setText('Hello again user!');
         $microPost2->setCreated(new DateTime()); // import this too!
+        $microPost2->setAuthor($user2);
         $manager->persist($microPost2);
 
         $microPost3 = new MicroPost(); // R-click to import class
         $microPost3->setTitle('Symfony is ace!');
         $microPost3->setText('Symfony is ace!');
         $microPost3->setCreated(new DateTime()); // import this too!
+        $microPost3->setAuthor($user1);
         $manager->persist($microPost3);
 
         $manager->flush(); // this executes the actual query
