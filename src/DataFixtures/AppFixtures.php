@@ -2,17 +2,47 @@
 
 namespace App\DataFixtures;
 
+use DateTime;
+use App\Entity\User;
 use App\Entity\MicroPost;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
-use DateTime;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(
+        private UserPasswordHasherInterface $userPasswordHasher
+    ) {
+    }
+
     public function load(ObjectManager $manager): void // this is an instance of 'dependancy injection' 🔥🔥🔥
     {
         // $product = new Product();
         // $manager->persist($product);
+
+        $user1 = new User();
+        $user1->setEmail('test@email.com');
+        $user1->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $user1,
+                'root'
+            )
+        );
+        $manager->persist($user1);
+
+        $user2 = new User();
+        $user2->setEmail('next@email.com');
+        $user2->setPassword(
+            $this->userPasswordHasher->hashPassword(
+                $user2,
+                'root'
+            )
+        );
+        $manager->persist($user2);
+
+
+
         $microPost1 = new MicroPost(); // R-click to import class
         $microPost1->setTitle('Welcome to my Symfony App!');
         $microPost1->setText('Welcome to my Symfony App!');
