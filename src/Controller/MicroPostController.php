@@ -91,7 +91,7 @@ class MicroPostController extends AbstractController
     }
 
     #[Route('/micro-post/{post}/comment', name: 'app_micro_post_comment')]
-    #[IsGranted('ROLE_COMMENTER')]
+    // #[IsGranted('ROLE_COMMENTER')]
     public function addComment(MicroPost $post, Request $request, CommentRepository $comments): Response
     {
         $form = $this->createForm(CommentType::class, new Comment());     // class & data
