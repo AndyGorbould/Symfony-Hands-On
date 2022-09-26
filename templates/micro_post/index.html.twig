@@ -3,14 +3,7 @@
 {% block title %}All Posts{% endblock %}
 
 {% block body %}
-<div class='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
-    {# How data is conditionally rendered should be done inside the template #}
-    {% if posts|length > 0 %}
-        {% for post in posts %}
-            {{ include('micro_post/_post.html.twig', {post: post}) }}
-        {% endfor %}
-    {% else %}
-        No messages...
-    {% endif %}
-</div>
+
+    {{ include ('micro_post/_post_list.html.twig') }}
+
 {% endblock %}
