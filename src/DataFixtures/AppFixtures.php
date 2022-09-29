@@ -26,7 +26,7 @@ class AppFixtures extends Fixture
         $user1->setPassword(
             $this->userPasswordHasher->hashPassword(
                 $user1,
-                'root'
+                'rootroot'
             )
         );
         $manager->persist($user1);
@@ -36,7 +36,7 @@ class AppFixtures extends Fixture
         $user2->setPassword(
             $this->userPasswordHasher->hashPassword(
                 $user2,
-                'root'
+                'rootroot'
             )
         );
         $manager->persist($user2);

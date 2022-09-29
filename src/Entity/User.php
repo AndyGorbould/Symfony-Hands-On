@@ -36,10 +36,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?UserProfile $userProfile = null;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: MicroPost::class)]
-    private Collection $posts;
+    private $posts;
 
     #[ORM\OneToMany(mappedBy: 'author', targetEntity: Comment::class)]
-    private Collection $comments;
+    private $comments;
 
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
@@ -47,10 +47,23 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $bannedUntil = null;
 
+    #[ORM\ManyToMany(mappedBy: 'likedBy', targetEntity: MicroPost::class)]
+    private $liked;
+
+    #[ORM\ManyToMany(targetEntity: self::class, inversedBy: 'followers')]
+    #[ORM\JoinTable(('followers'))]
+    private Collection $follows;
+
+    #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'follows')]
+    private Collection $followers;
+
     public function __construct()
     {
         $this->posts = new ArrayCollection();
         $this->comments = new ArrayCollection();
+        $this->liked = new ArrayCollection();
+        $this->follows = new ArrayCollection();
+        $this->followers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -89,7 +102,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
 
-        if($this->isVerified()) {
+        if ($this->isVerified()) {
             $roles[] = 'ROLE_VERIFIED';
         }
 
@@ -224,6 +237,84 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setBannedUntil(?\DateTimeInterface $bannedUntil): self
     {
         $this->bannedUntil = $bannedUntil;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, MicroPost>
+     */
+    public function getLiked(): Collection
+    {
+        return $this->liked;
+    }
+
+    public function addLiked(MicroPost $liked): self
+    {
+        if (!$this->liked->contains($liked)) {
+            $this->liked->add($liked);
+            $liked->addLikedBy($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLiked(MicroPost $liked): self
+    {
+        if ($this->liked->removeElement($liked)) {
+            $liked->removeLikedBy($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollows(): Collection
+    {
+        return $this->follows;
+    }
+
+    public function follow(self $follow): self
+    {
+        if (!$this->follows->contains($follow)) {
+            $this->follows->add($follow);
+        }
+
+        return $this;
+    }
+
+    public function unfollow(self $follow): self
+    {
+        $this->follows->removeElement($follow);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, self>
+     */
+    public function getFollowers(): Collection
+    {
+        return $this->followers;
+    }
+
+    public function addFollower(self $follower): self
+    {
+        if (!$this->followers->contains($follower)) {
+            $this->followers->add($follower);
+            $follower->follow($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFollower(self $follower): self
+    {
+        if ($this->followers->removeElement($follower)) {
+            $follower->unfollow($this);
+        }
 
         return $this;
     }

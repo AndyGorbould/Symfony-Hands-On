@@ -2,11 +2,13 @@
 // created with 'symfony console make:entity'
 namespace App\Entity;
 
-use App\Repository\MicroPostRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use DateTime;
+use DateTimeInterface;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\MicroPostRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: MicroPostRepository::class)]
@@ -31,18 +33,23 @@ class MicroPost
     private ?string $text = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $created = null;
+    private ?DateTimeInterface $created;
 
     #[ORM\OneToMany(mappedBy: 'post', targetEntity: Comment::class, orphanRemoval: true)]
-    private Collection $comments;
+    private $comments;
 
     #[ORM\ManyToOne(inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $author = null;
 
+    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'liked')]
+    private $likedBy;
+
     public function __construct()
     {
+        $this->created = new DateTime;
         $this->comments = new ArrayCollection();
+        $this->likedBy = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,6 +131,30 @@ class MicroPost
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getLikedBy(): Collection
+    {
+        return $this->likedBy;
+    }
+
+    public function addLikedBy(User $likedBy): self
+    {
+        if (!$this->likedBy->contains($likedBy)) {
+            $this->likedBy->add($likedBy);
+        }
+
+        return $this;
+    }
+
+    public function removeLikedBy(User $likedBy): self
+    {
+        $this->likedBy->removeElement($likedBy);
 
         return $this;
     }
