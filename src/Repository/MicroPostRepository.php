@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\User;
 use App\Entity\MicroPost;
-use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 
 /**
  * @extends ServiceEntityRepository<MicroPost>
@@ -46,6 +48,47 @@ class MicroPostRepository extends ServiceEntityRepository
         return $this->findAllQuery(
             withComments: true
         )->getQuery()->getResult();
+    }
+
+    public function findAllByAuthor(
+        int | User $author
+    ): array {
+        return $this->findAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true
+        )->where('p.author = :author')
+            ->setParameter(
+                'author',
+                $author instanceof User ? $author->getId() : $author
+            )->getQuery()
+            ->getResult();
+    }
+
+    public function findAllWithMinLikes(int $minLikes): array
+    {
+        $idList = $this->findAllQuery(
+            withLikes: true,
+        )->select('p.id')
+            ->groupBy('p.id')
+            ->having('COUNT(l) >= :minLikes')
+            ->setParameter('minLikes', $minLikes)
+            ->getQuery()
+            ->getResult(Query::HYDRATE_SCALAR_COLUMN);
+        // 👆 default converts to an object, this returns a column so only the ID is sent to the next query
+        // vendor/doctrine/orm/lib/Doctrine/ORM/AbstractQuery.php is where $hydrationMode can be found
+        // right-click on 'getResult()' & 'Go to Definition'
+
+        return $this->findAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true
+        )->where('p.id in (:idList)')
+            ->setParameter('idList', $idList)
+            ->getQuery()
+            ->getResult();
     }
 
     private function findAllQuery(
