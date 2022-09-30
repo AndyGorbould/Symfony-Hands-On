@@ -7,6 +7,7 @@ use App\Entity\MicroPost;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Query;
 
 /**
@@ -50,6 +51,7 @@ class MicroPostRepository extends ServiceEntityRepository
         )->getQuery()->getResult();
     }
 
+    // finds single person's posts
     public function findAllByAuthor(
         int | User $author
     ): array {
@@ -66,6 +68,24 @@ class MicroPostRepository extends ServiceEntityRepository
             ->getResult();
     }
 
+    // find all posts by a group of people (people I follow, person groups etc)
+    public function findAllByAuthors(
+        Collection | array $authors
+    ): array {
+        return $this->findAllQuery(
+            withComments: true,
+            withLikes: true,
+            withAuthors: true,
+            withProfiles: true
+        )->where('p.author IN (:authors)')
+            ->setParameter(
+                'authors',
+                $authors
+            )->getQuery()
+            ->getResult();
+    }
+
+    // find all posts with a minimum amount of likes given as the argument '$minLikes'
     public function findAllWithMinLikes(int $minLikes): array
     {
         $idList = $this->findAllQuery(
