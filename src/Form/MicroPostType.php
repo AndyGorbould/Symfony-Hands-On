@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\MicroPost;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,9 +14,9 @@ class MicroPostType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('text')
-            // ->add('created')         ⛔ auto-generated with 'symfony console make:form' with entity 'MicroPost', but not needed for me!
-        ;
+            ->add('text', TextareaType::class)
+            ->add('extraPrivacy');
+        // ->add('created')         ⛔ auto-generated with 'symfony console make:form' with entity 'MicroPost', but not needed for me!
     }
 
     public function configureOptions(OptionsResolver $resolver): void

@@ -45,11 +45,15 @@ class MicroPost
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'liked')]
     private $likedBy;
 
+    #[ORM\Column]
+    private ?bool $extraPrivacy = null;
+
     public function __construct()
     {
         $this->created = new DateTime;
         $this->comments = new ArrayCollection();
         $this->likedBy = new ArrayCollection();
+        $this->extraPrivacy = false;
     }
 
     public function getId(): ?int
@@ -155,6 +159,18 @@ class MicroPost
     public function removeLikedBy(User $likedBy): self
     {
         $this->likedBy->removeElement($likedBy);
+
+        return $this;
+    }
+
+    public function isExtraPrivacy(): ?bool
+    {
+        return $this->extraPrivacy;
+    }
+
+    public function setExtraPrivacy(bool $extraPrivacy): self
+    {
+        $this->extraPrivacy = $extraPrivacy;
 
         return $this;
     }
