@@ -11,7 +11,7 @@
 
         {% embed 'shared/_tab.html.twig' with { route: 'app_profile_follows', classes: 'ml-2' } %}
             {% block content %}
-                Follows <span class='px-2 rounded-md bg-gray-200 dark:bg-gray-700'>{{ user.follows.count }}</span>
+                Following <span class='px-2 rounded-md bg-gray-200 dark:bg-gray-700'>{{ user.follows.count }}</span>
             {% endblock %}
             {% block path %}
                 {{ path('app_profile_follows', { id: user.id }) }}

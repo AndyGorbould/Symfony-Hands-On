@@ -11,7 +11,7 @@
 
         {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post_topLiked', classes: 'ml-2' } %}
             {% block content %}
-                Top Liked
+                Most Liked
             {% endblock %}
             {% block path %}
                 {{ path('app_micro_post_topLiked') }}
@@ -20,7 +20,7 @@
 
         {% embed 'shared/_tab.html.twig' with { route: 'app_micro_post_follows', classes: 'ml-2' } %}
             {% block content %}
-                From People You Follow
+                Following
             {% endblock %}
             {% block path %}
                 {{ path('app_micro_post_follows') }}
